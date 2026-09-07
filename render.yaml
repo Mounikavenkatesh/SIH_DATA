@@ -1,0 +1,48 @@
+services:
+  # 1. FastAPI Machine Learning Microservice
+  - type: web
+    name: sat-therm-ml
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: PORT
+        value: 8000
+
+  # 2. Node.js Express REST API Backend
+  - type: web
+    name: sat-therm-backend
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: ML_SERVICE_URL
+        value: http://sat-therm-ml:8000
+      - key: CORS_ORIGIN
+        value: "*"
+
+  # 3. React + Vite GIS Command Dashboard (Static Site)
+  - type: web
+    name: sat-therm-frontend
+    runtime: static
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

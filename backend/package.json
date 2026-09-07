@@ -1,0 +1,30 @@
+{
+  "name": "ai-industrial-fire-backend",
+  "version": "1.0.0",
+  "description": "Node.js & Express REST API for Satellite Thermal Hotspot Classification, Persistence, and Risk Scoring",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node utils/seedDatabase.js"
+  },
+  "keywords": [
+    "satellite",
+    "thermal-anomaly",
+    "industrial-fire",
+    "gis",
+    "express",
+    "mongodb"
+  ],
+  "author": "Smart India Hackathon Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "mongoose": "^8.3.0",
+    "morgan": "^1.10.0"
+  }
+}

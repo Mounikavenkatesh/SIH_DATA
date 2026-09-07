@@ -1,0 +1,27 @@
+{
+  "name": "sat-therm-intelligence",
+  "version": "2.0.0",
+  "description": "Automated Multi-Sensor Satellite Thermal Anomaly Characterization & Geospatial Proximity Pipeline",
+  "scripts": {
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run dev",
+    "start:ml": ".venv\\Scripts\\python.exe -m uvicorn app:app --host 127.0.0.1 --port 8000 --reload --app-dir ml-service",
+    "start:cv": "cd cv-module && ..\\.venv\\Scripts\\streamlit run app.py",
+    "build:frontend": "cd frontend && npm run build",
+    "test:pytest": ".venv\\Scripts\\python.exe -m pytest -v",
+    "seed:db": "cd backend && npm run seed"
+  },
+  "keywords": [
+    "satellite",
+    "thermal-anomaly",
+    "industrial-fire",
+    "gis",
+    "machine-learning",
+    "fastapi",
+    "express",
+    "react",
+    "sih"
+  ],
+  "author": "Smart India Hackathon Team",
+  "license": "MIT"
+}

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT-THERM GIS | Satellite Thermal Source Monitoring & Risk Visualization</title>
+  <meta name="description" content="Satellite thermal anomaly analysis, classification, indicative monitoring buffers, and persistent monitoring GIS platform for Smart India Hackathon.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <!-- Application Styling -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="brand-section">
+      <span class="brand-icon">🔥</span>
+      <div>
+        <h1 class="brand-title">SAT-THERM GIS</h1>
+      </div>
+      <span class="brand-badge live-pulse" id="liveRadarBadge">● Near-real-time FIRMS</span>
+    </div>
+
+    <!-- Aggregate Telemetry Stats -->
+    <div class="nav-metrics">
+      <div class="nav-metric-pill">
+        <span class="nav-metric-label">Total Hotspots</span>
+        <span class="nav-metric-val" id="metricTotalEvents">-</span>
+      </div>
+      <div class="nav-metric-pill">
+        <span class="nav-metric-label">Predicted Industrial Sources</span>
+        <span class="nav-metric-val" id="metricActiveFires" style="color: #f87171;">-</span>
+      </div>
+      <div class="nav-metric-pill">
+        <span class="nav-metric-label">High-Intensity Sources</span>
+        <span class="nav-metric-val" id="metricCriticalFires" style="color: #ef4444;">-</span>
+      </div>
+      <div class="nav-metric-pill">
+        <span class="nav-metric-label">Resolved / Inactive</span>
+        <span class="nav-metric-val" id="metricResolvedFires" style="color: #10b981;">-</span>
+      </div>
+      <div class="nav-metric-pill">
+        <span class="nav-metric-label">High-Risk Sites</span>
+        <span class="nav-metric-val" id="metricHighRisk" style="color: #f59e0b;">-</span>
+      </div>
+    </div>
+
+    <!-- Action Toolbar -->
+    <div class="nav-actions">
+      <button class="btn btn-warning" id="btnSimulateFire" title="Simulate near-real-time satellite thermal anomaly detection">
+        <span>🚨 Simulate Detection</span>
+      </button>
+      <button class="btn btn-secondary" id="btnExportGeoJson" title="Export events as GeoJSON FeatureCollection">
+        <span>📥 GeoJSON</span>
+      </button>
+      <button class="btn btn-secondary" id="btnExportCsv" title="Export filtered thermal events as CSV">
+        <span>📊 CSV</span>
+      </button>
+      <button class="btn btn-secondary" id="btnRefresh" title="Refresh data and analytics">
+        <span>🔄 Refresh</span>
+      </button>
+      <button class="btn btn-primary" id="btnSeedMock" title="Ingest realistic mock FIRMS dataset">
+        <span>⚡ Ingest Mock</span>
+      </button>
+      <button class="btn btn-danger" id="btnClearDb" title="Purge database">
+        <span>🗑️ Purge</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div class="workspace">
+    <!-- Left Sidebar / Controls & Incidents -->
+    <aside class="sidebar">
+      
+      <!-- Thermal Source Classification Filter -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">
+          <span>Thermal Source Classification</span>
+          <span id="activeSeverityLabel" style="color: var(--accent-cyan);">All</span>
+        </div>
+        <div class="category-filter-grid" id="severityFilters">
+          <div class="category-chip active" data-severity="">
+            <div class="chip-label">
+              <span class="color-dot dot-all"></span>
+              <span>All Thermal Detections</span>
+            </div>
+            <span class="chip-count" id="countAll">0</span>
+          </div>
+          <div class="category-chip" data-severity="Critical">
+            <div class="chip-label">
+              <span class="color-dot dot-critical"></span>
+              <span>High / Critical Intensity</span>
+            </div>
+            <span class="chip-count" id="countCritical">0</span>
+          </div>
+          <div class="category-chip" data-severity="Medium">
+            <div class="chip-label">
+              <span class="color-dot dot-medium"></span>
+              <span>Medium Intensity</span>
+            </div>
+            <span class="chip-count" id="countMedium">0</span>
+          </div>
+          <div class="category-chip" data-severity="Low">
+            <div class="chip-label">
+              <span class="color-dot dot-low"></span>
+              <span>Low Intensity</span>
+            </div>
+            <span class="chip-count" id="countLow">0</span>
+          </div>
+          <div class="category-chip" data-severity="Resolved">
+            <div class="chip-label">
+              <span class="color-dot dot-resolved"></span>
+              <span>Resolved / No active source</span>
+            </div>
+            <span class="chip-count" id="countResolved">0</span>
+          </div>
+        </div>
+
+        <!-- Fire Status Filter Tabs -->
+        <div class="status-tab-group" style="margin-top: 0.75rem;">
+          <div class="status-tab-label">Status Filter:</div>
+          <div class="status-tab-bar" id="statusBar">
+            <button class="status-tab active" data-status="">All</button>
+            <button class="status-tab" data-status="Active">Active</button>
+            <button class="status-tab" data-status="Persistent">Persistent</button>
+            <button class="status-tab" data-status="Resolved">Resolved</button>
+          </div>
+        </div>
+
+        <!-- FRP Filter -->
+        <div class="filter-group">
+          <div class="filter-label-row">
+            <span>Min Fire Radiative Power (FRP)</span>
+            <span id="frpValDisplay" style="font-family: var(--font-mono); color: var(--accent-cyan);">0 MW</span>
+          </div>
+          <input type="range" id="frpSlider" class="filter-range" min="0" max="150" value="0" step="5">
+        </div>
+      </div>
+
+      <!-- Map Controls, Basemap & Risk Zone Toggle -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">
+          <span>GIS Controls & Risk Layers</span>
+        </div>
+        <div class="map-controls-grid">
+          <div class="control-row">
+            <span class="control-label">Basemap Imagery</span>
+            <select id="basemapSelect" class="form-select">
+              <option value="dark" selected>ESRI Dark Canvas</option>
+              <option value="satellite">ESRI Satellite Imagery</option>
+              <option value="streets">OpenStreetMap Voyager</option>
+            </select>
+          </div>
+          <div class="control-row-toggle">
+            <label class="toggle-checkbox-label">
+              <input type="checkbox" id="toggleHotspots" checked>
+              <span>🔥 Hotspot Detections</span>
+            </label>
+            <label class="toggle-checkbox-label">
+              <input type="checkbox" id="toggleRiskZones" checked>
+              <span>🛡️ Indicative Monitoring Buffers</span>
+            </label>
+            <label class="toggle-checkbox-label">
+              <input type="checkbox" id="toggleClusters" checked>
+              <span>🏭 Persistent Hotspot Clusters</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Thermal Detections Feed -->
+      <div class="sidebar-section" style="max-height: 220px; display: flex; flex-direction: column;">
+        <div class="sidebar-title">
+          <span>Recent Thermal Detections</span>
+          <span style="font-family: var(--font-mono); font-size: 0.65rem; color: #f87171;">● REAL-TIME</span>
+        </div>
+        <div class="incidents-feed" id="recentIncidentsFeed">
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-align: center; padding: 0.75rem;">
+            Loading recent thermal detections...
+          </div>
+        </div>
+      </div>
+
+      <!-- Persistent Sites Explorer -->
+      <div class="sidebar-section" style="flex: 1;">
+        <div class="sidebar-title">
+          <span>Persistent Hotspot Sites</span>
+          <span id="clusterTotalLabel" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-cyan);">0 sites</span>
+        </div>
+        <div class="cluster-list" id="clusterList">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 1rem;">
+            Loading persistent sites...
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Leaflet Geospatial Map Canvas -->
+    <main id="map"></main>
+
+    <!-- Context Inspection Drawer -->
+    <aside class="context-drawer" id="contextDrawer">
+      <div class="drawer-header">
+        <div class="drawer-title-box">
+          <span class="drawer-subtitle" id="drawerSubtitle">Satellite Thermal Intelligence Trace</span>
+          <h2 class="drawer-title" id="drawerTitle">Hotspot Details</h2>
+        </div>
+        <button class="btn-close" id="btnCloseDrawer" title="Close details">✕</button>
+      </div>
+
+      <div class="drawer-content" id="drawerContent">
+        
+        <!-- Incident Status Banner -->
+        <div class="incident-status-banner" id="incidentStatusBanner">
+          <div class="status-badge" id="detStatusBadge">ACTIVE</div>
+          <div class="severity-badge" id="detSeverityBadge">HIGH INTENSITY</div>
+          <button class="btn-resolve-incident" id="btnResolveIncident">✅ Mark Resolved / No Active Source</button>
+        </div>
+
+        <!-- Telemetry Card -->
+        <div class="detail-card">
+          <div class="card-label">🛰️ Hotspot Detection Coordinates & Telemetry</div>
+          <div class="grid-2col">
+            <div class="prop-box">
+              <span class="prop-name">Hotspot ID</span>
+              <span class="prop-val" id="detFireId" style="color: #facc15; font-family: var(--font-mono);">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Hotspot Detection Coordinates</span>
+              <span class="prop-val" id="detCoords">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Sensor / Source</span>
+              <span class="prop-val" id="detSatellite">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Detection Time</span>
+              <span class="prop-val" id="detDateTime">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Detection History / Persistence</span>
+              <span class="prop-val" id="detDuration" style="color: #67e8f9;">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">FRP Intensity</span>
+              <span class="prop-val" id="detFrp" style="color: #ef4444; font-weight: 700;">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Brightness Temp</span>
+              <span class="prop-val" id="detBrightTemp">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">AI Confidence</span>
+              <span class="prop-val" id="detConfidence" style="color: #34d399; font-weight: 700;">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Indicative Risk / Monitoring Buffer Card -->
+        <div class="detail-card">
+          <div class="card-label">🛡️ Indicative Risk / Monitoring Buffer</div>
+          <div class="grid-2col">
+            <div class="prop-box" style="grid-column: span 2;">
+              <span class="prop-name">Indicative Monitoring Buffer Radius</span>
+              <span class="prop-val" id="detRiskZoneRadius" style="color: #fbbf24; font-weight: 700;">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OpenStreetMap Facility Card -->
+        <div class="detail-card">
+          <div class="card-label">🏭 OSM Industrial Proximity Intelligence</div>
+          <div class="grid-2col">
+            <div class="prop-box" style="grid-column: span 2;">
+              <span class="prop-name">Nearest Facility</span>
+              <span class="prop-val" id="detFacilityName" style="color: #67e8f9;">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Proximity Distance</span>
+              <span class="prop-val" id="detFacilityDistance">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Facility Type</span>
+              <span class="prop-val" id="detFacilityType">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Land Cover Biome Card -->
+        <div class="detail-card">
+          <div class="card-label">🌍 Biophysical Land-Cover Context</div>
+          <div class="grid-2col">
+            <div class="prop-box">
+              <span class="prop-name">Land-Use Biome</span>
+              <span class="prop-val" id="detLandBiome">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-name">Canopy Cover</span>
+              <span class="prop-val" id="detCanopyCover">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heuristic Evidence Breakdown -->
+        <div class="detail-card">
+          <div class="card-label">⚖️ AI Evidence Score Breakdown</div>
+          <div class="score-bars">
+            <div class="score-row">
+              <div class="score-meta">
+                <span>Gas Flare Combustion</span>
+                <span id="scoreFlareVal">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill fill-flare" id="barFlare" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-meta">
+                <span>Industrial Thermal Heat</span>
+                <span id="scoreIndVal">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill fill-industrial" id="barIndustrial" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-meta">
+                <span>Agricultural Burning</span>
+                <span id="scoreAgriVal">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill fill-agri" id="barAgri" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-meta">
+                <span>Wildfire / Forest Spread</span>
+                <span id="scoreWildfireVal">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill fill-wildfire" id="barWildfire" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ML Feature Vector Toggle -->
+          <button class="accordion-toggle" id="btnToggleVector">
+            <span>▶ View ML Feature Vector</span>
+          </button>
+          <pre class="raw-json-box" id="jsonVector"></pre>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Application JS -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

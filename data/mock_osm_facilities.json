@@ -1,0 +1,257 @@
+[
+  {
+    "osm_id": "way/384910281",
+    "osm_type": "way",
+    "name": "Reliance Jamnagar Refinery - Sector 1",
+    "facility_type": "refinery",
+    "latitude": 22.3680,
+    "longitude": 69.8320,
+    "tags": {
+      "industrial": "refinery",
+      "plant": "oil_refinery",
+      "operator": "Reliance Industries Limited",
+      "landuse": "industrial",
+      "name": "Reliance Jamnagar Refinery",
+      "hazard": "flammable",
+      "capacity": "1.24_million_barrels_per_day"
+    }
+  },
+  {
+    "osm_id": "node/928410293",
+    "osm_type": "node",
+    "name": "Jamnagar Refinery Elevated Flare Stack Alpha",
+    "facility_type": "gas_flare",
+    "latitude": 22.3686,
+    "longitude": 69.8310,
+    "tags": {
+      "man_made": "gas_flare",
+      "industrial": "flare",
+      "flare:type": "elevated_emergency",
+      "operator": "Reliance Industries",
+      "height": "120m"
+    }
+  },
+  {
+    "osm_id": "way/481920194",
+    "osm_type": "way",
+    "name": "Reliance Petrochemical Polypropylene Complex",
+    "facility_type": "petrochemical",
+    "latitude": 22.3720,
+    "longitude": 69.8270,
+    "tags": {
+      "landuse": "industrial",
+      "industrial": "chemical",
+      "product": "polypropylene",
+      "name": "Jamnagar Polypropylene Plant"
+    }
+  },
+  {
+    "osm_id": "node/102948102",
+    "osm_type": "node",
+    "name": "Permian Basin Automated Production Flare #14",
+    "facility_type": "gas_flare",
+    "latitude": 31.8540,
+    "longitude": -102.3214,
+    "tags": {
+      "man_made": "gas_flare",
+      "industrial": "flare",
+      "operator": "Pioneer Natural Resources",
+      "petroleum": "gas_flare",
+      "monitoring": "continuous"
+    }
+  },
+  {
+    "osm_id": "way/592018471",
+    "osm_type": "way",
+    "name": "Midland Basin Gas Compression & Sweetening Plant",
+    "facility_type": "gas_processing",
+    "latitude": 31.8590,
+    "longitude": -102.3150,
+    "tags": {
+      "industrial": "gas_processing",
+      "landuse": "industrial",
+      "pipeline": "substation",
+      "operator": "Energy Transfer Partners"
+    }
+  },
+  {
+    "osm_id": "node/719284019",
+    "osm_type": "node",
+    "name": "Permian North Gas Gathering Flare Stack",
+    "facility_type": "gas_flare",
+    "latitude": 31.9122,
+    "longitude": -102.2678,
+    "tags": {
+      "man_made": "gas_flare",
+      "industrial": "flare",
+      "operator": "Diamondback Energy",
+      "status": "active"
+    }
+  },
+  {
+    "osm_id": "way/619284012",
+    "osm_type": "way",
+    "name": "Ludhiana Agricultural Cooperative Lands",
+    "facility_type": "farmland",
+    "latitude": 30.7300,
+    "longitude": 75.8500,
+    "tags": {
+      "landuse": "farmland",
+      "crop": "paddy;wheat",
+      "irrigation": "canal",
+      "zone": "rural_agriculture"
+    }
+  },
+  {
+    "osm_id": "way/829104817",
+    "osm_type": "way",
+    "name": "Kurukshetra Basin Paddy Cultivation Tract",
+    "facility_type": "farmland",
+    "latitude": 29.9850,
+    "longitude": 76.8780,
+    "tags": {
+      "landuse": "farmland",
+      "crop": "basmati_rice",
+      "seasonal_burning": "post_harvest_oct_nov"
+    }
+  },
+  {
+    "osm_id": "way/910294819",
+    "osm_type": "way",
+    "name": "Athabasca Boreal Taiga Forest Conservation Unit",
+    "facility_type": "forest",
+    "latitude": 56.7300,
+    "longitude": -111.3800,
+    "tags": {
+      "landuse": "forest",
+      "natural": "wood",
+      "wood": "coniferous",
+      "leaf_type": "needleleaved",
+      "protection_class": "5"
+    }
+  },
+  {
+    "osm_id": "way/381920491",
+    "osm_type": "way",
+    "name": "Jurong Island Petrochemical Cluster - ExxonMobil Chemical",
+    "facility_type": "refinery",
+    "latitude": 1.2647,
+    "longitude": 103.6821,
+    "tags": {
+      "landuse": "industrial",
+      "industrial": "refinery",
+      "operator": "ExxonMobil Asia Pacific",
+      "man_made": "works"
+    }
+  },
+  {
+    "osm_id": "node/472819024",
+    "osm_type": "node",
+    "name": "ExxonMobil Baytown Refinery Flare Mast North",
+    "facility_type": "refinery",
+    "latitude": 29.7148,
+    "longitude": -95.1252,
+    "tags": {
+      "industrial": "refinery",
+      "man_made": "gas_flare",
+      "operator": "ExxonMobil Corporation",
+      "landuse": "industrial"
+    }
+  },
+  {
+    "osm_id": "node/819204712",
+    "osm_type": "node",
+    "name": "Rumaila Field Degassing Station #3 Ground Flare Pit",
+    "facility_type": "gas_flare",
+    "latitude": 30.5205,
+    "longitude": 47.7805,
+    "tags": {
+      "man_made": "gas_flare",
+      "industrial": "flare",
+      "operator": "Basra Oil Company",
+      "hydrocarbon": "crude_gas"
+    }
+  },
+  {
+    "osm_id": "node/391028471",
+    "osm_type": "node",
+    "name": "Bonny Island NLNG High-Pressure Flare",
+    "facility_type": "gas_flare",
+    "latitude": 4.6502,
+    "longitude": 7.1204,
+    "tags": {
+      "man_made": "gas_flare",
+      "industrial": "flare",
+      "operator": "Nigeria LNG Ltd",
+      "gas": "natural_gas"
+    }
+  },
+  {
+    "osm_id": "way/748291038",
+    "osm_type": "way",
+    "name": "BCCL Jharia Open Cast Coal Mine Block 4",
+    "facility_type": "mine",
+    "latitude": 23.8342,
+    "longitude": 86.4152,
+    "tags": {
+      "landuse": "quarry",
+      "resource": "coal",
+      "mine": "open_pit",
+      "operator": "Bharat Coking Coal Limited",
+      "hazard": "coal_seam_fire"
+    }
+  },
+  {
+    "osm_id": "way/502918471",
+    "osm_type": "way",
+    "name": "Plumas National Forest Pine Canopy Area",
+    "facility_type": "forest",
+    "latitude": 39.8150,
+    "longitude": -121.4300,
+    "tags": {
+      "leisure": "nature_reserve",
+      "natural": "wood",
+      "landuse": "forest",
+      "trees": "ponderosa_pine"
+    }
+  },
+  {
+    "osm_id": "way/291048172",
+    "osm_type": "way",
+    "name": "Dwarka Sector 21 Commercial Complex",
+    "facility_type": "commercial",
+    "latitude": 28.5205,
+    "longitude": 77.0805,
+    "tags": {
+      "building": "commercial",
+      "roof:material": "glass;solar_panel",
+      "landuse": "commercial"
+    }
+  },
+  {
+    "osm_id": "way/192847102",
+    "osm_type": "way",
+    "name": "Makrana White Marble Quarry #2",
+    "facility_type": "mine",
+    "latitude": 24.5805,
+    "longitude": 73.6805,
+    "tags": {
+      "landuse": "quarry",
+      "resource": "marble",
+      "surface": "white_stone"
+    }
+  },
+  {
+    "osm_id": "way/682910471",
+    "osm_type": "way",
+    "name": "Deonar Municipal Solid Waste Landfill",
+    "facility_type": "waste_disposal",
+    "latitude": 19.1125,
+    "longitude": 72.8845,
+    "tags": {
+      "landuse": "landfill",
+      "waste": "municipal_solid",
+      "hazard": "methane_outgassing"
+    }
+  }
+]

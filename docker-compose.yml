@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Python FastAPI Machine Learning Microservice
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: sat-therm-ml
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+
+  # Node.js Express REST API Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sat-therm-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - ML_SERVICE_URL=http://ml-service:8000
+      - MONGODB_URI=mongodb://mongodb:27017/industrial_fire_ai
+      - CORS_ORIGIN=*
+    depends_on:
+      - ml-service
+      - mongodb
+
+  # React + Vite GIS Command Dashboard
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sat-therm-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: sat-therm-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
